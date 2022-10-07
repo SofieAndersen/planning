@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { filter, pairwise, startWith, Subject, takeUntil } from 'rxjs';
 import {
   CreateShiftEvent,
   Employee,
@@ -77,17 +77,19 @@ export class CreateShiftDialogComponent implements OnInit, OnDestroy {
     this.createForm.valueChanges
       .pipe(
         takeUntil(this.unsubscribe$),
-        filter((values) => !!values.template)
+        startWith(this.createForm.value),
+        pairwise(),
+        filter(([prev, curr]) => prev.template !== curr.template)
       )
-      .subscribe((values) => {
+      .subscribe(([_, values]) => {
         const template = this.data.templates.find(
           (template) => template.id === values.template
         );
         this.createForm.patchValue(
           {
-            name: values.name || template?.name,
-            startTime: values.startTime || template?.startTime,
-            endTime: values.endTime || template?.endTime,
+            name: template?.name,
+            startTime: template?.startTime,
+            endTime: template?.endTime,
           },
           { emitEvent: false }
         );

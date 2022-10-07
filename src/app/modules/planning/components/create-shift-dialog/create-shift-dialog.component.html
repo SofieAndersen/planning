@@ -8,7 +8,7 @@
     <div class="form-group">
       <label for="template">Shift template</label>
       <select id="template" name="template" formControlName="template">
-        <option [ngValue]="null">Select template</option>
+        <option [value]="null">Select template</option>
         <option
           *ngFor="let template of data?.templates; trackById"
           [value]="template.id"
@@ -20,7 +20,7 @@
     <div class="form-group">
       <label for="employee">Employee</label>
       <select id="employee" name="employee" formControlName="employee">
-        <option [ngValue]="null">Select employee</option>
+        <option [value]="null">Select employee</option>
         <option
           *ngFor="let employee of data?.employees; trackById"
           [value]="employee.id"
