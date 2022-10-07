@@ -19,10 +19,10 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let employee of (view$ | async)?.employees; trackby: trackById">
+    <tr *ngFor="let employee of (view$ | async)?.employees; trackBy: trackById">
       <td>{{ employee.name }}</td>
       <td *ngFor="let schedule of employee.schedule">
-        <div class="shift" *ngFor="let shift of schedule; trackby: trackById">
+        <div class="shift" *ngFor="let shift of schedule; trackBy: trackById">
           <span
             >{{ shift.name }}<br />
             <small
