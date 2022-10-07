@@ -6,6 +6,7 @@ import { PlanningComponent } from './planning.component';
 import { CreateShiftDialogComponent } from './components/create-shift-dialog/create-shift-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [PlanningComponent, CreateShiftDialogComponent],
@@ -15,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogModule,
     ReactiveFormsModule,
     MatButtonModule,
+    DragDropModule,
   ],
 })
 export class PlanningModule {}

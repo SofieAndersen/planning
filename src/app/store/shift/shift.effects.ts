@@ -29,5 +29,16 @@ export class ShiftEffects {
     )
   );
 
+  editShift$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ShiftActions.editShift),
+      switchMap((payload) =>
+        this.shiftService
+          .editShift(payload.shift, payload.employeeId, payload.date)
+          .pipe(map((shift) => ShiftActions.upsertShift({ shift })))
+      )
+    )
+  );
+
   constructor(private actions$: Actions, private shiftService: ShiftService) {}
 }

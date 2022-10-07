@@ -14,15 +14,25 @@
     <tr>
       <th></th>
       <th *ngFor="let day of (view$ | async)?.dates">
-        {{ day | date: dateFormat }}
+        {{ day | date: 'EE, MMM d' }}
       </th>
     </tr>
   </thead>
-  <tbody>
+  <tbody cdkDropListGroup>
     <tr *ngFor="let employee of (view$ | async)?.employees; trackBy: trackById">
       <td>{{ employee.name }}</td>
-      <td *ngFor="let schedule of employee.schedule">
-        <div class="shift" *ngFor="let shift of schedule; trackBy: trackById">
+      <td
+        *ngFor="let schedule of employee.schedule; let i = index"
+        cdkDropList
+        [cdkDropListData]="schedule"
+        (cdkDropListDropped)="drop($event, employee.id, i)"
+        [cdkDropListSortingDisabled]="true"
+      >
+        <div
+          *ngFor="let shift of schedule; trackBy: trackById"
+          class="shift"
+          cdkDrag
+        >
           <span
             >{{ shift.name }}<br />
             <small

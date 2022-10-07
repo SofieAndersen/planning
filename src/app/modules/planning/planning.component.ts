@@ -18,7 +18,12 @@ import {
 import { ShiftTemplateService } from 'src/app/services/shift-template.service';
 import { selectAllEmployees, selectAllShifts, State } from 'src/app/store';
 import { getEmployees } from 'src/app/store/employee/employee.actions';
-import { createShift, getShifts } from 'src/app/store/shift/shift.actions';
+import {
+  createShift,
+  editShift,
+  getShifts,
+} from 'src/app/store/shift/shift.actions';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CreateShiftDialogComponent } from './components/create-shift-dialog/create-shift-dialog.component';
 
 interface EmployeeWithSchedule extends Employee {
@@ -42,10 +47,8 @@ export class PlanningComponent implements OnInit {
 
   view$: Observable<PlanningWeekView>;
 
-  private displayDates$ = new BehaviorSubject<Date>(new Date());
-
-  readonly dateFormat = 'EE, MMM d';
-  readonly week = 7;
+  private date$ = new BehaviorSubject<Date>(new Date());
+  readonly weekSize = 7;
 
   constructor(
     private store: Store<State>,
@@ -59,7 +62,7 @@ export class PlanningComponent implements OnInit {
     this.view$ = combineLatest([
       this.shifts$,
       this.employees$,
-      this.displayDates$.pipe(map((date) => this.getDates(date))),
+      this.date$.pipe(map((date) => this.getWeekDates(date))),
     ]).pipe(
       map(([shifts, employees, dates]) => ({
         dates,
@@ -96,21 +99,41 @@ export class PlanningComponent implements OnInit {
   }
 
   onPrevious(): void {
-    const date = this.displayDates$.value;
-    this.displayDates$.next(new Date(date.setDate(date.getDate() - this.week)));
+    const date = this.date$.value;
+    this.date$.next(new Date(date.setDate(date.getDate() - this.weekSize)));
   }
 
   onNext(): void {
-    const date = this.displayDates$.value;
-    this.displayDates$.next(new Date(date.setDate(date.getDate() + this.week)));
+    const date = this.date$.value;
+    this.date$.next(new Date(date.setDate(date.getDate() + this.weekSize)));
+  }
+
+  drop(
+    event: CdkDragDrop<Shift[]>,
+    employeeId: string,
+    scheduleIndex: number
+  ): void {
+    this.view$.pipe(take(1)).subscribe((view) => {
+      if (event.previousContainer.id !== event.container.id) {
+        const shift = event.previousContainer.data[event.previousIndex];
+        const date = view.dates[scheduleIndex];
+        this.store.dispatch(editShift({ shift, date, employeeId }));
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      }
+    });
   }
 
   trackById(_: number, obj: Employee | Shift): string {
     return obj.id;
   }
 
-  private getDates(date: Date): Date[] {
-    return [...Array(this.week)].map((_, index) =>
+  private getWeekDates(date: Date): Date[] {
+    return [...Array(this.weekSize)].map((_, index) =>
       this.getDateFromStartOfWeek(date, index)
     );
   }
@@ -133,7 +156,7 @@ export class PlanningComponent implements OnInit {
     return {
       ...employee,
       schedule: employeeShifts.reduce(
-        (acc, curr: Shift) => {
+        (acc: Shift[][], curr: Shift) => {
           const dateIndex = dates.findIndex(
             (date) =>
               new Date(curr.startDate).toDateString() === date.toDateString()
@@ -147,7 +170,7 @@ export class PlanningComponent implements OnInit {
           }
           return acc;
         },
-        [...Array(this.week)]
+        [...Array(this.weekSize)].map(() => [])
       ),
     };
   }

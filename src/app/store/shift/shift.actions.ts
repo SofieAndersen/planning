@@ -9,6 +9,11 @@ export const createShift = createAction(
   props<{ shift: CreateShiftEvent }>()
 );
 
+export const editShift = createAction(
+  '[Shift/API] Edit Shift',
+  props<{ shift: Shift; employeeId: string; date: Date }>()
+);
+
 export const loadShifts = createAction(
   '[Shift/API] Load Shifts',
   props<{ shifts: Shift[] }>()
