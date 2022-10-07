@@ -1,1 +1,38 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'variables';
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+.form-group {
+  margin-bottom: $spacer;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  label {
+    display: block;
+    margin-bottom: $spacer-s;
+  }
+
+  input,
+  select {
+    width: 100%;
+    border: solid 1px $color-gray-100;
+    padding: $spacer-s;
+    background-color: $color-white;
+  }
+}

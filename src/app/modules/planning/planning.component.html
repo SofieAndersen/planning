@@ -1,0 +1,37 @@
+<button (click)="onCreate()" mat-raised-button color="primary">
+  Create shift
+</button>
+
+<div class="table-nav">
+  <button (click)="onPrevious()" mat-raised-button color="secondary">
+    Previous
+  </button>
+  <button (click)="onNext()" mat-raised-button color="secondary">Next</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th *ngFor="let day of (view$ | async)?.dates">
+        {{ day | date: dateFormat }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let employee of (view$ | async)?.employees; trackby: trackById">
+      <td>{{ employee.name }}</td>
+      <td *ngFor="let schedule of employee.schedule">
+        <div class="shift" *ngFor="let shift of schedule; trackby: trackById">
+          <span
+            >{{ shift.name }}<br />
+            <small
+              >{{ shift.startDate | date: 'shortTime' }} -
+              {{ shift.endDate | date: 'shortTime' }}</small
+            ></span
+          >
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

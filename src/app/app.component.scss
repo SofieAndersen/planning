@@ -1,0 +1,19 @@
+@import 'variables';
+
+nav {
+  background-color: $nav-bg;
+  color: $color-white;
+  display: flex;
+  align-items: center;
+  height: $nav-height;
+
+  a {
+    padding: $spacer-s $spacer;
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.content {
+  padding: $spacer;
+}

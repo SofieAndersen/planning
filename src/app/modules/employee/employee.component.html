@@ -1,0 +1,5 @@
+<ul>
+  <li *ngFor="let employee of employees$ | async; trackBy: trackByEmployee">
+    {{ employee.name }}
+  </li>
+</ul>
